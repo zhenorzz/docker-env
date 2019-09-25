@@ -30,6 +30,7 @@ RUN \
     git \
     zip \
     unzip \
+    zlib1g-dev \
     openssl \
     libssl-dev \
     libtinfo5 \
@@ -39,6 +40,8 @@ RUN \
     libpng-dev \
     libmcrypt-dev \
     libmhash-dev \
+    libzip-dev \
+    libxml2-dev \
     ntpdate \
     cron;
 
@@ -49,7 +52,8 @@ RUN \
 RUN docker-php-ext-configure gd \
     --with-freetype-dir=/usr/include/ \
     --with-jpeg-dir=/usr/include/ ; \
-    docker-php-ext-install -j$(nproc) gd pdo_mysql mysqli pgsql pdo_pgsql soap ; \
+    docker-php-ext-configure zip --with-zlib-dir=/usr ; \
+    docker-php-ext-install -j$(nproc) gd pdo_mysql mysqli soap zip ; \
     \
     # ⬇ Redis
     pecl install /home/resource/redis-5.0.2.tgz ; \ 
