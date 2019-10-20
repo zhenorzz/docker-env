@@ -53,7 +53,7 @@ RUN docker-php-ext-configure gd \
     --with-freetype-dir=/usr/include/ \
     --with-jpeg-dir=/usr/include/ ; \
     docker-php-ext-configure zip --with-zlib-dir=/usr ; \
-    docker-php-ext-install -j$(nproc) gd pdo_mysql mysqli soap zip ; \
+    docker-php-ext-install -j$(nproc) gd pdo_mysql mysqli soap zip bcmath; \
     \
     # ⬇ Redis
     pecl install /home/resource/redis-5.0.2.tgz ; \ 
@@ -70,6 +70,10 @@ RUN docker-php-ext-configure gd \
     # ⬇ Mongodb
     pecl install /home/resource/mongodb-1.6.0.tgz ; \
     echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini ; \
+    \
+     # ⬇ Protobuf
+    pecl install /home/resource/protobuf-3.10.0.tgz ; \
+    echo "extension=protobuf.so" > /usr/local/etc/php/conf.d/protobuf.ini ; \
     \
     # ⬇ 清理
     rm -rf /var/lib/apt/lists/* ; \
