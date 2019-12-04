@@ -1,72 +1,36 @@
-<!DOCTYPE html>
-<html>
+<?php
+// 注意该文件不能热重启，请修改后手动重启
+define('MEMORY_SIZE', '2G');
+function readCSV($file)
+{
+  $row      = 0;
+  $csvArray = array();
+  if (($handle = fopen($file, "r")) !== FALSE) {
+    while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
+      $num = count($data);
+      for ($c = 0; $c < $num; $c++) {
 
-<head>
-	<title>Docker LNMP</title>
-	<style type="text/css">
-		html {
-			font-family: sans-serif;
-			-ms-text-size-adjust: 100%;
-			-webkit-text-size-adjust: 100%
-		}
+        $csvArray[$row] = explode(',', str_replace('"', '', $data[$c]));
+      }
+      $row++;
+    }
+  }
+  $first = [];
+  $first = $csvArray[0];
+  $csvArray = array_splice($csvArray, 1); //cut off the first row (names of the fields)
+  foreach ($csvArray as &$csv) {
+    $csv = array_combine($first, $csv);
+  }
+  return $csvArray;
+}
 
-		.mine {
-			font-size: 30px;
-			margin-top: 200px;
-			color: #333;
-		}
+$csvData = readCSV(__DIR__ . '/test1130.csv'); //This is your array with the data
 
-		.desc {
-			text-align: center;
-			color: #ccc;
-			margin-bottom: 50px;
-			line-height: 30px;
-		}
-
-		footer {
-			text-align: center;
-		}
-
-		footer a {
-			color: #fff;
-			background: #F95445;
-			display: block;
-			width: 180px;
-			margin: 0 auto;
-			text-decoration: none;
-			line-height: 40px;
-			height: 40px;
-			border-radius: 3px;
-		}
-	</style>
-</head>
-
-<body>
-
-	<p align="center" class="mine">Docker LNMP</p>
-
-	<p class="desc">
-		Version：3.3<br />
-		Time：<?= date_default_timezone_get() . "&nbsp;/&nbsp;" . date("Y-m-d H:i:s"); ?>
-	</p>
-
-	<footer>
-		<a href="https://github.com/exc-soft/docker-lnmp" target="_blank">Get Documentation</a>
-
-		<p style="color:#ccc;font-size:12px;margin-top:100px;">
-			&copy; <?php echo date("Y") ?>&nbsp;usoftglobal.com
-		</p>
-		<?php
-		$date = new DateTimeImmutable("2018-07-25");
-		$previous = $date->sub(new DateInterval('P1M'));
-		$lastMonth = $date->modify('last day of previous month');
-		if ($previous > $lastMonth) {
-			$previous = $lastMonth;
-		}
-		echo $previous->format('Y-m-d');
-		?>
-	</footer>
-
-</body>
-
-</html>
+//495658
+$time1 = microtime(true);
+array_multisort(array_column($csvData, 'login_days'),  SORT_DESC, array_column($csvData, 'game_reg_date'),  SORT_ASC, $csvData);
+$time2 =  microtime(true);
+for ($i = 0; $i < 1000; $i++) {
+  print_r($csvData[$i]);
+}
+print_r(round($time2 - $time1, 4));
