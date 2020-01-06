@@ -60,7 +60,7 @@ RUN docker-php-ext-configure gd \
     echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini ; \
     \
     # ⬇ Swoole
-    pecl install /home/resource/swoole-4.4.12.tgz ; \
+    pecl install /home/resource/swoole-4.4.14.tgz ; \
     echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini ; \
     \
     # ⬇ Mcrypt
