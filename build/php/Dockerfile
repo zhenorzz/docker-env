@@ -1,4 +1,4 @@
-FROM php:7.3.9-fpm
+FROM php:7.4.8-fpm
 
 COPY resource /home/resource
 
@@ -60,11 +60,11 @@ RUN docker-php-ext-configure gd \
     echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini ; \
     \
     # ⬇ Swoole
-    pecl install /home/resource/swoole-4.4.14.tgz ; \
+    pecl install /home/resource/swoole-4.5.2.tgz ; \
     echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini ; \
     \
     # ⬇ Mcrypt
-    pecl install /home/resource/mcrypt-1.0.2.tgz ; \
+    pecl install /home/resource/mcrypt-1.0.3.tgz ; \
     echo "extension=mcrypt.so" > /usr/local/etc/php/conf.d/mcrypt.ini ; \
     \
     # ⬇ Mongodb
@@ -72,7 +72,7 @@ RUN docker-php-ext-configure gd \
     echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini ; \
     \
      # ⬇ Protobuf
-    pecl install /home/resource/protobuf-3.10.0.tgz ; \
+    pecl install /home/resource/protobuf-3.12.2.tgz ; \
     echo "extension=protobuf.so" > /usr/local/etc/php/conf.d/protobuf.ini ; \
     \
     # ⬇ 清理
