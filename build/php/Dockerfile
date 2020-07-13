@@ -9,7 +9,7 @@ ENV TIME_ZONE=${TIME_ZONE} LC_ALL=C.UTF-8
 
 RUN \
     # ⬇ 修改时区
-    ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime ; \ 
+    ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime ; \
     echo $TIME_ZONE > /etc/timezone ; \
     \
     # ⬇ 安装 PHP Composer
@@ -19,7 +19,7 @@ RUN \
     # ⬇ 替换源
     rm -rf /etc/apt/sources.list.d/buster.list ; \
     if [ ${CHANGE_SOURCE} = true ]; then \
-        mv /etc/apt/sources.list /etc/apt/source.list.bak; \ 
+        mv /etc/apt/sources.list /etc/apt/source.list.bak; \
         mv /home/resource/sources.list /etc/apt/sources.list; \
         composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ ; \
     fi; \
@@ -32,6 +32,10 @@ RUN \
     unzip \
     zlib1g-dev \
     openssl \
+    nasm\
+    yasm \
+    libx264-dev \
+    libx265-dev \
     libssl-dev \
     libtinfo5 \
     libpq-dev \
@@ -42,8 +46,24 @@ RUN \
     libmhash-dev \
     libzip-dev \
     libxml2-dev \
+    libfdk-aac-dev\
     ntpdate \
     cron;
+
+####################################################################################
+# 安装 FFMPEG 扩展
+####################################################################################
+RUN mkdir -p ~/ffmpeg_sources && cd ~/ffmpeg_sources && \
+    tar zxvf /home/resource/ffmpeg-4.2.2.tar.gz && \
+    cd ffmpeg-4.2.2 && \
+    ./configure \
+       --enable-gpl \
+       --enable-libx264 \
+       --extra-libs=-ldl \
+       --enable-nonfree \
+       --enable-libfdk-aac && \
+    make -j$(nproc) && \
+    make install -j$(nproc)
 
 ####################################################################################
 # 安装 PHP 扩展
@@ -53,7 +73,7 @@ RUN docker-php-ext-configure gd \
     --with-freetype-dir=/usr/include/ \
     --with-jpeg-dir=/usr/include/ ; \
     docker-php-ext-configure zip --with-zlib-dir=/usr ; \
-    docker-php-ext-install -j$(nproc) gd pdo_mysql mysqli soap zip bcmath; \
+    docker-php-ext-install -j$(nproc) gd pcntl pdo_mysql mysqli soap zip bcmath; \
     \
     # ⬇ Redis
     pecl install /home/resource/redis-5.0.2.tgz ; \ 
@@ -79,3 +99,8 @@ RUN docker-php-ext-configure gd \
     rm -rf /var/lib/apt/lists/* ; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false ; \
     rm -rf /home/resource ;
+
+####################################################################################
+# 最后才换 dash to bash 
+####################################################################################
+RUN ln -fs /bin/bash /bin/sh
