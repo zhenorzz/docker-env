@@ -98,6 +98,10 @@ RUN docker-php-ext-configure gd \
     pecl install /home/resource/protobuf-3.12.2.tgz ; \
     echo "extension=protobuf.so" > /usr/local/etc/php/conf.d/protobuf.ini ; \
     \
+     # ⬇ Inotify
+    pecl install /home/resource/inotify-3.0.0.tgz ; \
+    echo "extension=inotify.so" > /usr/local/etc/php/conf.d/inotify.ini ; \
+    \
     # ⬇ 清理
     rm -rf /var/lib/apt/lists/* ; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false ; \
