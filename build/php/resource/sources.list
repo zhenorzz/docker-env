@@ -1,4 +1,5 @@
-deb http://mirrors.ustc.edu.cn/debian stable main contrib non-free 
-deb-src http://mirrors.ustc.edu.cn/debian stable main contrib non-free 
-deb http://mirrors.ustc.edu.cn/debian stable-proposed-updates main contrib non-free 
-deb-src http://mirrors.ustc.edu.cn/debian stable-proposed-updates main contrib non-free
+deb http://mirrors.ustc.edu.cn/debian stable main contrib non-free non-free-firmware
+deb-src http://mirrors.ustc.edu.cn/debian stable main contrib non-free non-free-firmware
+deb http://mirrors.ustc.edu.cn/debian stable-proposed-updates main contrib non-free non-free-firmware
+deb-src http://mirrors.ustc.edu.cn/debian stable-proposed-updates main contrib non-free non-free-firmware
+deb http://security.ubuntu.com/ubuntu xenial-security main

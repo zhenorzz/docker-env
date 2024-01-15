@@ -1,4 +1,4 @@
-FROM php:7.4.8-fpm
+FROM php:7.4-fpm
 
 COPY resource /home/resource
 
@@ -6,6 +6,10 @@ ARG CHANGE_SOURCE=false
 ARG TIME_ZONE=UTC
 
 ENV TIME_ZONE=${TIME_ZONE} LC_ALL=C.UTF-8
+
+RUN apt-get update && apt-get install -y gnupg
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0E98404D386FA1D9 F8D2585B8783D481 6ED0E7B82643E131 3B4FE6ACC0B21F32
 
 RUN \
     # ⬇ 修改时区
@@ -19,8 +23,8 @@ RUN \
     # ⬇ 替换源
     rm -rf /etc/apt/sources.list.d/buster.list ; \
     if [ ${CHANGE_SOURCE} = true ]; then \
-        mv /etc/apt/sources.list /etc/apt/source.list.bak; \
-        mv /home/resource/sources.list /etc/apt/sources.list; \
+        # mv /etc/apt/sources.list /etc/apt/source.list.bak; \
+        cat /home/resource/sources.list >> /etc/apt/sources.list; \
         composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ ; \
     fi; \
     \
@@ -46,7 +50,7 @@ RUN \
     libmhash-dev \
     libzip-dev \
     libxml2-dev \
-    libfdk-aac-dev\
+    libfdk-aac-dev \
     ntpdate \
     cron;
 
@@ -70,6 +74,9 @@ RUN mkdir -p ~/ffmpeg_sources && cd ~/ffmpeg_sources && \
 ####################################################################################
 
 RUN docker-php-ext-configure gd \
+    --enable-gd \
+    --with-freetype \
+    --with-jpeg \
     --with-freetype-dir=/usr/include/ \
     --with-jpeg-dir=/usr/include/ ; \
     docker-php-ext-configure zip --with-zlib-dir=/usr ; \
